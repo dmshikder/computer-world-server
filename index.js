@@ -19,6 +19,9 @@ async function run(){
     try{
         await client.connect();
         const inventoryCollection = client.db('computer-world').collection('product');
+
+        const myItemCollection = client.db('computer-world').collection('myItem');
+
         app.get('/inventory', async(req,res)=>{
             const query = {};
             const cursor = inventoryCollection.find(query);
@@ -35,6 +38,9 @@ app.get('/inventory/:id', async(req,res)=>{
 
 // post 
 app.post('/inventory', async(req,res)=>{
+
+   
+
     const newProduct = req.body;
     const result = await inventoryCollection.insertOne(newProduct);
     res.send(result);
@@ -47,6 +53,36 @@ app.delete('/inventory/:id', async(req,res)=>{
     const result = await inventoryCollection.deleteOne(query);
     res.send(result);
 });
+
+// my items  api 
+
+    app.get('/myItem', async(req,res)=>{
+        const email = req.query.email;
+        const query ={email};
+        const cursor = myItemCollection.find(query);
+        const items = await cursor.toArray();
+        res.send(items);
+    })
+
+
+
+
+
+    app.post('/myItem', async(req,res) =>{
+        const item = req.body;
+        const result = await myItemCollection.insertOne(item);
+        res.send(result);
+    });
+
+// app.get('/inventory', async(req,res)=>{
+//     const email = req.query.email;
+//     console.log(email);
+//     const query = {email:email};
+   
+//     const cursor = inventoryCollection.find(query);
+//     const myItems = await cursor.toArray();
+//     res.send(myItems);
+// })
 
     }
     finally{
