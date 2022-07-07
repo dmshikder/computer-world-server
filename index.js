@@ -74,6 +74,20 @@ async function run() {
       res.send(result);
     });
 
+    // update items quantity
+    app.put('/inventory/:id', async(req,res)=>{
+      const id = req.params.id;
+      const updatedQuantity = req.body;
+      const filter = {_id: ObjectId(id)};
+      const option = {upsert: true};
+      const updatedDoc = {
+        $set: updatedQuantity
+      };
+      const result = await inventoryCollection.updateOne(filter, updatedDoc, option);
+      res.send(result);
+
+    })
+
     // delete
     app.delete("/inventory/:id", async (req, res) => {
       const id = req.params.id;
@@ -84,7 +98,7 @@ async function run() {
 
     // my item delete
 
-    app.delete("/myItem/:id",  verifyJWT, async (req, res) => {
+    app.delete("/inventory/:id",   async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
         const result = await myItemCollection.deleteOne(query);
