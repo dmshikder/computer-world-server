@@ -60,7 +60,7 @@ async function run() {
       res.send(products);
     });
 
-    app.get("/home", async (req, res) => {
+    app.get("/", async (req, res) => {
       const query = {};
       const cursor = inventoryCollection.find(query);
       const products = await cursor.limit(6).toArray();
