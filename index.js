@@ -60,6 +60,13 @@ async function run() {
       res.send(products);
     });
 
+    app.get("/inventory", async (req, res) => {
+      const query = {};
+      const cursor = inventoryCollection.find(query);
+      const products = await cursor.limit(6).toArray();
+      res.send(products);
+    });
+
     app.get("/inventory/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -74,7 +81,7 @@ async function run() {
       res.send(result);
     });
 
-    // update items quantity
+    
   
 
     // delete
@@ -87,7 +94,7 @@ async function run() {
 
     // my item delete
 
-    app.delete("/inventory/:id",   async (req, res) => {
+    app.delete("/myItem/:id",   async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
         const result = await myItemCollection.deleteOne(query);
@@ -96,18 +103,21 @@ async function run() {
 
     // my items  api
 
-    app.get("/myItem", verifyJWT, async (req, res) => {
+    app.get("/myItem", verifyJWT,  async (req, res) => {
       const decodedEmail = req.decoded.email;
       const email = req.query.email;
-      if (email === decodedEmail) {
-        const query = { email: email };
+      if(email === decodedEmail){
+        const query = {email: email};
         const cursor = myItemCollection.find(query);
         const items = await cursor.toArray();
         res.send(items);
       }
       else{
-        res.status(403).send({message: 'forbidden access'})
+        res.status(403).send({message:'forbidden access'})
       }
+       
+      
+     
     });
 
     app.post("/myItem", async (req, res) => {
